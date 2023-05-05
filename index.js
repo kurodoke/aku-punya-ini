@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, GatewayIntentBits, Events, SlashCommandBuilder, Collection } = require('discord.js');
-const { joinVoiceChannel, getVoiceConnection, VoiceConnectionStatus, entersState} = require('@discordjs/voice');
+const { joinVoiceChannel, getVoiceConnection, VoiceConnectionStatus, createAudioPlayer, createAudioResource, AudioPlayerStatus, PlayerSubscription} = require('@discordjs/voice');
 
 //.env
 require('dotenv').config();
@@ -31,6 +31,8 @@ client.on(Events.ClientReady, () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
+
+const player = createAudioPlayer();
 let connection;
 client.on(Events.MessageCreate, (msg) => {
 	if (msg.content == "aku punya ini"){
@@ -39,11 +41,17 @@ client.on(Events.MessageCreate, (msg) => {
 			guildId : msg.guild.id,
 			adapterCreator : msg.guild.voiceAdapterCreator
 		});
-		msg.channel.send("test1");
+		msg.channel.send("okeh");
+
+		let vidPath = path.join(__dirname, "/app/vid/202305052128.mp4");
+		let resource = createAudioResource(vidPath);
+		player.play(resource);
+		connection.subscribe(player);
 	}
 
 	if (msg.content == "bang bang udah bang"){
 		if (connection) {
+			player.stop();
 			connection.destroy();
 			msg.channel.send("iya");
 		} else {
@@ -51,6 +59,18 @@ client.on(Events.MessageCreate, (msg) => {
 		}
 	}
 });
+
+player.on(AudioPlayerStatus.Idle, () => {
+	player.stop();
+	let vidPath = path.join(__dirname, "/app/vid/202305052128.mp4");
+	let resource = createAudioResource(vidPath);
+	player.play(resource);
+	connection.subscribe(player);
+})
+
+player.on(AudioPlayerStatus.AutoPaused, () => {
+	console.log("auto");
+})
 
 
 client.login(process.env.TOKEN);
