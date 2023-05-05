@@ -43,7 +43,7 @@ client.on(Events.MessageCreate, (msg) => {
 		});
 		msg.channel.send("okeh");
 
-		let vidPath = path.join(__dirname, "/app/vid/202305052128.mp4");
+		let vidPath = path.join(__dirname, "/app/vid/0505.mp4");
 		let resource = createAudioResource(vidPath);
 		player.play(resource);
 		connection.subscribe(player);
@@ -62,14 +62,14 @@ client.on(Events.MessageCreate, (msg) => {
 
 player.on(AudioPlayerStatus.Idle, () => {
 	player.stop();
-	let vidPath = path.join(__dirname, "/app/vid/202305052128.mp4");
+	let vidPath = path.join(__dirname, "/app/vid/0505.mp4");
 	let resource = createAudioResource(vidPath);
 	player.play(resource);
 	connection.subscribe(player);
 })
 
 player.on(AudioPlayerStatus.AutoPaused, () => {
-	console.log("auto");
+	//console.log("auto");
 })
 
 
